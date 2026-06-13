@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 39 48% 93%;
+    --foreground: 183 44% 18%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 183 44% 18%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 183 44% 18%;
+
+    --primary: 78 100% 73%;
+    --primary-foreground: 183 44% 18%;
+
+    --secondary: 183 44% 18%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 38 34% 88%;
+    --muted-foreground: 90 7% 42%;
+
+    --accent: 78 100% 73%;
+    --accent-foreground: 183 44% 18%;
+
+    --surface-lime: 78 100% 73%;
+    --surface-lavender: 258 32% 88%;
+    --surface-cream: 39 48% 93%;
+    --surface-olive: 183 44% 18%;
+    --surface-olive-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 183 44% 18% / 0.12;
+    --input: 183 44% 18% / 0.12;
+    --ring: 78 100% 52%;
+
+    --radius: 0;
+
+    --sidebar-background: 183 44% 18%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 78 100% 73%;
+    --sidebar-primary-foreground: 183 44% 18%;
+    --sidebar-accent: 183 44% 23%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 100% / 0.12;
+    --sidebar-ring: 78 100% 73%;
+
+    --dark: 183 44% 18%;
+    --dark-foreground: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    border-radius: 0 !important;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-display {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+  }
+
+  .font-serif-italic {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  .tracking-eyebrow {
+    letter-spacing: 0.08em;
+  }
+
+  .section-padding {
+    @apply py-24 lg:py-36;
+  }
+
+  .container-narrow {
+    @apply max-w-5xl mx-auto px-6 lg:px-10;
+  }
+
+  .container-wide {
+    @apply max-w-[1440px] mx-auto px-6 lg:px-12;
+  }
+
+  .hairline {
+    @apply border-t border-border/60;
+  }
+
+  .surface-lime {
+    background-color: hsl(var(--surface-lime));
+    color: hsl(var(--foreground));
+  }
+
+  .surface-lavender {
+    background-color: hsl(var(--surface-lavender));
+    color: hsl(var(--foreground));
+  }
+
+  .surface-cream {
+    background-color: hsl(var(--surface-cream));
+    color: hsl(var(--foreground));
+  }
+
+  .surface-olive {
+    background-color: hsl(var(--surface-olive));
+    color: hsl(var(--surface-olive-foreground));
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes marquee-rtl {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@layer utilities {
+  .animate-marquee-rtl {
+    animation: marquee-rtl 22s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-marquee-rtl {
+      animation: none;
+    }
+  }
+}
