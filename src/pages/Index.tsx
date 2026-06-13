@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import {
   ArrowRight,
@@ -12,8 +12,11 @@ import {
 import Layout from "@/components/layout/Layout";
 
 import aboutDetail from "@/assets/verity-lab-room.webp";
-import heroLab from "@/assets/verity-distillation.webp";
 import heroLabPortrait from "@/assets/hero-lab-portrait.png";
+import independentMattersImage from "@/assets/independent-matters-lab.png";
+import crudeAnalysisImage from "@/assets/crude-lubricants-oil.jpg";
+import fuelsAnalysisImage from "@/assets/fuel-distillates-nozzle.jpg";
+import waterAnalysisImage from "@/assets/water-environment-lab.webp";
 
 const heroStatementLines = [
   "Verity Labs is an independent multi-purpose laboratory",
@@ -128,6 +131,8 @@ const serviceCardStyles = [
 const catalogue = [
   {
     title: "Fuels & Distillates",
+    image: fuelsAnalysisImage,
+    imageAlt: "Fuel sample analysis in a Verity Labs testing environment",
     rows: [
       ["Gasoline", "D4814"],
       ["Diesel / gas oil", "EN590"],
@@ -138,6 +143,8 @@ const catalogue = [
   },
   {
     title: "Crude, Gas & Lubricants",
+    image: crudeAnalysisImage,
+    imageAlt: "Lubricant oil pouring from a bottle for crude and lubricant analysis",
     rows: [
       ["Crude oil & condensate", "D5002"],
       ["Natural gas mixtures", "GPA 2261"],
@@ -148,6 +155,8 @@ const catalogue = [
   },
   {
     title: "Water & Environmental",
+    image: waterAnalysisImage,
+    imageAlt: "Water testing sample prepared for environmental analysis",
     rows: [
       ["Potable water", "ISO 5667"],
       ["Produced / process water", "D1129"],
@@ -181,6 +190,35 @@ const credentials = [
 ];
 
 const valueChain = ["TRADERS", "REFINERS", "BUNKERING", "REGULATORS", "INSURERS", "SURVEYORS"];
+
+const catalogueGrid = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.14,
+      delayChildren: 0.08,
+    },
+  },
+};
+
+const catalogueCard = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+    scale: 0.985,
+    filter: "blur(8px)",
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: {
+      duration: 0.68,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
 
 function CertificatePanel() {
   return (
@@ -257,7 +295,64 @@ function ScrollRevealStatement() {
   );
 }
 
+function IndependentMattersSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+  const clipPath = useTransform(
+    scrollYProgress,
+    [0, 0.45, 1],
+    ["circle(2% at 50% 50%)", "circle(28% at 50% 50%)", "circle(150% at 50% 50%)"]
+  );
+  const imageScale = useTransform(scrollYProgress, [0, 1], [1.18, 1]);
+
+  return (
+    <section ref={sectionRef} className="relative min-h-[260vh] text-white">
+      <div className="sticky top-0 h-screen overflow-hidden">
+        <motion.div style={{ clipPath }} className="absolute inset-0">
+          <motion.img
+            src={independentMattersImage}
+            alt="Independent laboratory instruments and sample preparation"
+            style={{ scale: imageScale }}
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-[#1A4143]/56" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#061f20]/86 via-[#1A4143]/56 to-[#061f20]/74" />
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
+        </motion.div>
+
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-[72%] bg-gradient-to-l from-[#061f20]/82 via-[#1A4143]/58 to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-[48%] bg-[#061f20]/42 backdrop-blur-[2px]" />
+
+        <div className="container-wide relative z-10 flex min-h-screen items-center">
+          <div className="ml-auto max-w-2xl py-10 text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)] lg:py-16">
+            <p className="text-sm font-semibold text-white/70">Why independent matters</p>
+            <blockquote className="mt-6 text-3xl font-semibold leading-[1.02] tracking-[-0.045em] md:text-5xl">
+              &quot;We built Verity Labs so quality could be settled at home - with talent and instruments that already existed locally, instead of shipping samples overseas and waiting weeks for an answer.&quot;
+            </blockquote>
+            <p className="mt-7 font-mono text-xs uppercase tracking-eyebrow text-white/60">- On the origin of Verity Labs</p>
+            <div className="mt-10 flex flex-wrap gap-2">
+              {valueChain.map((item) => (
+                <span key={item} className="border border-white/18 bg-[#1A4143]/48 px-4 py-2 font-mono text-[11px] font-semibold tracking-eyebrow text-white/78 backdrop-blur">
+                  {item}
+                </span>
+              ))}
+            </div>
+            <p className="mt-8 max-w-2xl text-base leading-7 text-white/76">
+              Trusted across the value chain by parties who can&apos;t afford to be wrong about what&apos;s in the tank - and who need a result the other side will accept.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Index() {
+  const [activeProcessStep, setActiveProcessStep] = useState<number | null>(null);
+
   return (
     <Layout transparentNav>
       <section className="relative overflow-hidden px-4 pb-16 pt-12 text-white md:pt-16 lg:min-h-[860px] lg:pb-24" style={{ backgroundColor: "#1A4143" }}>
@@ -422,57 +517,117 @@ export default function Index() {
             <p className="mx-auto mt-7 max-w-2xl text-base leading-7 text-foreground/58">A representative slice of our accredited methods. Need something not listed? We validate new methods on request.</p>
           </div>
 
-          <div className="mt-16 grid gap-5 lg:grid-cols-3">
+          <motion.div
+            variants={catalogueGrid}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-100px" }}
+            className="mt-16 grid gap-5 lg:grid-cols-3"
+          >
             {catalogue.map((group, index) => (
               <motion.article 
                 key={group.title} 
-                initial={{ opacity: 0, y: 20 }} 
-                whileInView={{ opacity: 1, y: 0 }} 
-                viewport={{ once: true, margin: "-80px" }} 
-                transition={{ duration: 0.55, delay: index * 0.08 }} 
+                variants={catalogueCard}
                 whileHover={{ y: -6, scale: 1.008 }}
-                className="overflow-hidden rounded-[2rem] bg-white shadow-[0_18px_65px_rgba(26,65,67,0.08)] transition duration-300"
+                className="group relative min-h-[560px] overflow-hidden rounded-[2rem] bg-[#1A4143] shadow-[0_18px_65px_rgba(26,65,67,0.08)] transition duration-300"
               >
-                <div className="border-b border-[#1A4143]/10 p-7">
-                  <h3 className="text-2xl font-semibold tracking-[-0.03em]">{group.title}</h3>
-                </div>
-                <div className="divide-y divide-[#1A4143]/8">
-                  {group.rows.map(([name, method]) => (
-                    <div key={name} className="grid grid-cols-[1fr_auto] items-center gap-4 px-7 py-4">
-                      <span className="text-sm font-medium text-foreground/70">{name}</span>
-                      <span className="font-mono text-xs font-semibold text-foreground/44">{method}</span>
-                    </div>
-                  ))}
+                <motion.img
+                  src={group.image}
+                  alt={group.imageAlt}
+                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  initial={{ scale: 1.08 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: index * 0.08 }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#020d0e]/98 via-[#071d1e]/84 via-62% to-[#1A4143]/28" />
+                <div className="absolute inset-x-0 bottom-0 h-[78%] bg-gradient-to-t from-black/82 via-black/44 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/95 via-black/62 to-transparent" />
+                <div className="relative z-10 flex min-h-[560px] flex-col justify-between p-6 text-white md:p-7">
+                  <div>
+                    <span className="font-mono text-[11px] font-semibold uppercase tracking-eyebrow text-white/64">
+                      0{index + 1}
+                    </span>
+                    <h3 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.04em]">{group.title}</h3>
+                  </div>
+                  <div className="mt-12 divide-y divide-white/12 border-y border-white/12">
+                    {group.rows.map(([name, method]) => (
+                      <div key={name} className="grid grid-cols-[1fr_auto] items-center gap-4 py-4">
+                        <span className="text-sm font-medium leading-5 text-white/78">{name}</span>
+                        <span className="font-mono text-xs font-semibold text-[#d9ff75]">{method}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </motion.article>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       <section className="px-4 py-20 lg:py-28">
         <div className="container-wide overflow-hidden rounded-[2.6rem] bg-[#1A4143] text-white">
           <div className="grid gap-10 p-6 md:p-10 lg:grid-cols-[0.9fr_1.1fr] lg:p-12">
-            <div className="flex min-h-[540px] flex-col justify-between rounded-[2rem] bg-[#d9ff75] p-7 text-[#1A4143] md:p-10">
-              <div>
-                <p className="text-sm font-semibold text-[#1A4143]/55">How an engagement runs</p>
-                <h2 className="mt-6 max-w-xl text-5xl font-semibold leading-[0.96] tracking-[-0.045em] md:text-6xl">From sample to signed certificate.</h2>
-                <p className="mt-6 max-w-md text-sm leading-6 text-[#1A4143]/62">A typed sequence, because chain-of-custody only means something if every step is ordered and recorded.</p>
+            <div className="relative flex min-h-[540px] overflow-hidden rounded-[2rem] p-7 text-white md:p-10">
+              <img
+                src={aboutDetail}
+                alt="Laboratory instrument used for analytical testing"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0" style={{ backgroundColor: "rgba(26, 65, 67, 0.36)" }} />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(14,70,42,0.68) 0%, rgba(55,116,60,0.42) 48%, rgba(4,40,30,0.66) 100%)",
+                }}
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "radial-gradient(circle at 28% 18%, rgba(217,255,117,0.18) 0%, rgba(14,70,42,0.28) 36%, rgba(0,0,0,0) 68%)",
+                }}
+              />
+              <div className="relative z-10 flex h-full min-h-[460px] flex-col justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-white/62">How an engagement runs</p>
+                  <h2 className="mt-6 max-w-xl text-5xl font-semibold leading-[0.96] tracking-[-0.045em] md:text-6xl">From sample to signed certificate.</h2>
+                  <p className="mt-6 max-w-md text-sm leading-6 text-white/68">A typed sequence, because chain-of-custody only means something if every step is ordered and recorded.</p>
+                </div>
+                <div className="h-px w-full bg-white/24" />
               </div>
-              <img src={aboutDetail} alt="Laboratory instrument used for analytical testing" className="mt-10 h-72 rounded-[1.7rem] object-cover" />
             </div>
 
             <div className="flex flex-col justify-center gap-4">
               {process.map(([step, title, copy], index) => (
-                <motion.div key={title} initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.55, delay: index * 0.08 }} className="rounded-[1.8rem] border border-white/10 bg-white/[0.06] p-6 backdrop-blur">
+                <motion.div
+                  key={title}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.55, delay: index * 0.08 }}
+                  onMouseEnter={() => setActiveProcessStep(index)}
+                  onMouseLeave={() => setActiveProcessStep(null)}
+                  onFocus={() => setActiveProcessStep(index)}
+                  onBlur={() => setActiveProcessStep(null)}
+                  tabIndex={0}
+                  className="group rounded-[1.8rem] border border-white/10 bg-white/[0.06] p-6 backdrop-blur transition duration-300 hover:bg-white/[0.1] focus:bg-white/[0.1] focus:outline-none focus:ring-1 focus:ring-[#d9ff75]/60"
+                >
                   <div className="flex gap-5">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-[#1A4143]">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#d9ff75] text-[#1A4143] transition duration-300 group-hover:scale-105 group-focus-within:scale-105">
                       <CheckCircle2 className="h-5 w-5" />
                     </div>
                     <div>
                       <p className="font-mono text-xs text-white/42">{step}</p>
                       <h3 className="mt-1 text-2xl font-semibold tracking-[-0.03em]">{title}</h3>
-                      <p className="mt-3 max-w-xl text-sm leading-6 text-white/58">{copy}</p>
+                      <p
+                        className={`max-w-xl overflow-hidden text-sm leading-6 text-white/64 transition-all duration-300 ${
+                          activeProcessStep === index ? "mt-3 max-h-24 opacity-100" : "max-h-0 opacity-0"
+                        }`}
+                      >
+                        {copy}
+                      </p>
                     </div>
                   </div>
                 </motion.div>
@@ -515,39 +670,7 @@ export default function Index() {
         </div>
       </section>
 
-      <section className="px-4 py-20 lg:py-28">
-        <div className="container-wide">
-          <motion.div 
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7 }}
-            className="overflow-hidden rounded-[2.6rem] bg-white shadow-[0_20px_70px_rgba(26,65,67,0.07)]"
-          >
-            <div className="grid lg:grid-cols-[0.9fr_1.1fr]">
-              <div className="relative min-h-[420px]">
-                <img src={heroLab} alt="Independent laboratory instruments and sample preparation" className="absolute inset-0 h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-[#1A4143]/35" />
-              </div>
-              <div className="p-8 md:p-12 lg:p-16">
-                <p className="text-sm font-semibold text-foreground/45">Why independent matters</p>
-                <blockquote className="mt-6 text-3xl font-semibold leading-tight tracking-[-0.04em] md:text-5xl">
-                  &quot;We built Verity Labs so quality could be settled at home - with talent and instruments that already existed locally, instead of shipping samples overseas and waiting weeks for an answer.&quot;
-                </blockquote>
-                <p className="mt-7 font-mono text-xs uppercase tracking-eyebrow text-foreground/42">- On the origin of Verity Labs</p>
-                <div className="mt-10 flex flex-wrap gap-2">
-                  {valueChain.map((item) => (
-                    <span key={item} className="rounded-full border border-[#1A4143]/10 bg-[#f7f3ea] px-4 py-2 font-mono text-[11px] font-semibold tracking-eyebrow text-foreground/58">{item}</span>
-                  ))}
-                </div>
-                <p className="mt-8 max-w-2xl text-base leading-7 text-foreground/58">
-                  Trusted across the value chain by parties who can&apos;t afford to be wrong about what&apos;s in the tank - and who need a result the other side will accept.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      <IndependentMattersSection />
 
       <section id="contact" className="scroll-mt-28 px-4 pb-24 pt-10 lg:pb-32">
         <motion.div 
