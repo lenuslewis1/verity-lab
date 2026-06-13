@@ -323,8 +323,20 @@ function IndependentMattersSection() {
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
         </motion.div>
 
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-[72%] bg-gradient-to-l from-[#061f20]/82 via-[#1A4143]/58 to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-[48%] bg-[#061f20]/42 backdrop-blur-[2px]" />
+        <div
+          className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-[76%]"
+          style={{
+            background:
+              "linear-gradient(270deg, rgba(6,31,32,0.76) 0%, rgba(18,52,53,0.58) 34%, rgba(26,65,67,0.28) 68%, rgba(26,65,67,0) 100%)",
+          }}
+        />
+        <div
+          className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-[58%]"
+          style={{
+            background:
+              "radial-gradient(ellipse at 58% 42%, rgba(6,31,32,0.58) 0%, rgba(6,31,32,0.34) 40%, rgba(6,31,32,0.12) 70%, rgba(6,31,32,0) 100%)",
+          }}
+        />
 
         <div className="container-wide relative z-10 flex min-h-screen items-center">
           <div className="ml-auto max-w-2xl py-10 text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)] lg:py-16">
