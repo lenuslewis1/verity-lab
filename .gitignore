@@ -27,3 +27,6 @@ dist-ssr
 # Local QA artifacts
 qa-*.png
 qa-*.mjs
+
+# Local Netlify folder
+.netlify
