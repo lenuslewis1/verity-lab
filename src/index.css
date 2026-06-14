@@ -139,6 +139,18 @@
     background-color: hsl(var(--surface-olive));
     color: hsl(var(--surface-olive-foreground));
   }
+
+  .verity-radius-lg {
+    border-radius: 1.2rem !important;
+  }
+
+  .verity-radius-md {
+    border-radius: 0.9rem !important;
+  }
+
+  .verity-radius-full {
+    border-radius: 9999px !important;
+  }
 }
 
 @keyframes fade-up {

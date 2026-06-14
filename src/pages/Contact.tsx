@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { Clock, MapPin, Phone, Star } from "lucide-react";
 import Layout from "@/components/layout/Layout";
+import PageHero from "@/components/shared/PageHero";
+import contactHero from "@/assets/contact-hero.jpg";
 
 const labDetails = {
   name: "Verity Lab, Tema Comm. 2",
@@ -17,19 +19,12 @@ const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${enc
 export default function Contact() {
   return (
     <Layout>
-      <section className="container-wide pt-20 lg:pt-28 pb-24">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <p className="text-[11px] uppercase tracking-eyebrow font-mono text-secondary mb-6">Enquiries</p>
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.98] max-w-5xl">
-            Send a sample.<br />
-            <span className="text-secondary">Get an answer.</span>
-          </h1>
-        </motion.div>
-      </section>
+      <PageHero
+        eyebrow="Enquiries"
+        title="Send a sample. Get an answer."
+        description="Share your sample type, testing requirement, and deadline. Our laboratory team will confirm the right method, turnaround, and next steps."
+        bgImage={contactHero}
+      />
 
       <section className="border-t border-border/40">
         <div className="container-wide py-20 lg:py-28 grid grid-cols-1 lg:grid-cols-12 gap-16">

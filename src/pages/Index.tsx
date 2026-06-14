@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import {
   ArrowRight,
@@ -12,7 +12,7 @@ import {
 import Layout from "@/components/layout/Layout";
 
 import aboutDetail from "@/assets/verity-lab-room.webp";
-import heroLabPortrait from "@/assets/hero-lab-portrait.png";
+import heroBackgroundVideo from "@/assets/hero-background.mp4";
 import independentMattersImage from "@/assets/independent-matters-lab.png";
 import crudeAnalysisImage from "@/assets/crude-lubricants-oil.jpg";
 import fuelsAnalysisImage from "@/assets/fuel-distillates-nozzle.jpg";
@@ -90,41 +90,6 @@ const services = [
     copy: "Method selection, specification design, and lab set-up advice for clients building their own quality programs from the ground up.",
     tags: ["Spec design", "Method validation", "Programme set-up"],
     icon: Microscope,
-  },
-];
-
-const serviceCardStyles = [
-  {
-    shell: "bg-[#1A4143] text-white",
-    number: "text-[#d9ff75]",
-    muted: "text-white/62",
-    icon: "bg-[#d9ff75] text-[#1A4143]",
-    tag: "bg-white/10 text-white/72",
-    line: "bg-white/12",
-  },
-  {
-    shell: "bg-[#d9ff75] text-[#1A4143]",
-    number: "text-[#1A4143]/56",
-    muted: "text-[#1A4143]/66",
-    icon: "bg-white/80 text-[#1A4143]",
-    tag: "bg-[#1A4143]/10 text-[#1A4143]/74",
-    line: "bg-[#1A4143]/14",
-  },
-  {
-    shell: "bg-white text-[#1A4143]",
-    number: "text-[#1A4143]/42",
-    muted: "text-[#1A4143]/58",
-    icon: "bg-[#1A4143] text-white",
-    tag: "bg-[#f1eadc] text-[#1A4143]/70",
-    line: "bg-[#1A4143]/10",
-  },
-  {
-    shell: "bg-[#cfe5e3] text-[#1A4143]",
-    number: "text-[#1A4143]/50",
-    muted: "text-[#1A4143]/62",
-    icon: "bg-[#1A4143] text-white",
-    tag: "bg-white/55 text-[#1A4143]/74",
-    line: "bg-[#1A4143]/12",
   },
 ];
 
@@ -219,27 +184,6 @@ const catalogueCard = {
     },
   },
 };
-
-function CertificatePanel() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.8, delay: 0.25 }}
-      className="relative w-full overflow-hidden rounded-[2rem] shadow-[0_30px_90px_rgba(26,65,67,0.24)]"
-    >
-      <div className="overflow-hidden rounded-[1.5rem]" style={{ backgroundColor: "#1A4143" }}>
-        <div className="relative min-h-[380px] overflow-hidden md:min-h-[520px] lg:min-h-[620px]">
-          <img
-            src={heroLabPortrait}
-            alt="Laboratory analyst preparing fuel and oil samples"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        </div>
-      </div>
-    </motion.div>
-  );
-}
 
 function ScrollRevealLine({
   line,
@@ -362,18 +306,173 @@ function IndependentMattersSection() {
   );
 }
 
+function ServiceRevealCard({
+  service,
+  index,
+  isVisible,
+}: {
+  service: (typeof services)[number];
+  index: number;
+  isVisible: boolean;
+}) {
+  const Icon = service.icon;
+  const [, label] = service.number.split(" / ");
+
+  return (
+    <motion.article
+      animate={{
+        opacity: isVisible ? 1 : 0,
+        y: isVisible ? 0 : 58,
+        scale: isVisible ? 1 : 0.96,
+      }}
+      transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1], delay: index * 0.04 }}
+      whileHover={{ y: -6 }}
+      className="verity-radius-md group flex min-h-[340px] flex-col border border-white/10 bg-white/[0.08] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.16)] backdrop-blur transition duration-300 hover:bg-white/[0.12]"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="font-mono text-[11px] font-semibold uppercase tracking-eyebrow text-[#d9ff75]">
+            {label}
+          </p>
+        </div>
+        <span className="verity-radius-full flex h-11 w-11 shrink-0 items-center justify-center bg-[#d9ff75] text-[#1A4143] transition duration-300 group-hover:scale-105">
+          <Icon className="h-5 w-5" strokeWidth={1.8} />
+        </span>
+      </div>
+
+      <div className="my-7 h-px w-full bg-white/14" />
+      <p className="text-sm leading-6 text-white/72">{service.copy}</p>
+
+      <div className="mt-auto pt-10">
+        <div className="h-px w-full bg-white/14" />
+        <a
+          href="#contact"
+          className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-white transition group-hover:text-[#d9ff75]"
+        >
+          Request this service
+          <span className="verity-radius-full flex h-5 w-5 items-center justify-center bg-[#d9ff75] text-[#1A4143]">
+            <ArrowRight className="h-3.5 w-3.5 -rotate-45" />
+          </span>
+        </a>
+      </div>
+    </motion.article>
+  );
+}
+
+function WhatWeDoSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [visibleCardCount, setVisibleCardCount] = useState(0);
+
+  useEffect(() => {
+    const updateVisibleCards = () => {
+      const section = sectionRef.current;
+      if (!section) return;
+
+      const rect = section.getBoundingClientRect();
+      const scrollableDistance = Math.max(1, rect.height - window.innerHeight);
+      const progress = Math.min(1, Math.max(0, -rect.top / scrollableDistance));
+      const revealThresholds = [0.18, 0.52, 0.72, 0.9];
+      setVisibleCardCount(revealThresholds.filter((threshold) => progress >= threshold).length);
+    };
+
+    updateVisibleCards();
+    window.addEventListener("scroll", updateVisibleCards, { passive: true });
+    window.addEventListener("resize", updateVisibleCards);
+
+    return () => {
+      window.removeEventListener("scroll", updateVisibleCards);
+      window.removeEventListener("resize", updateVisibleCards);
+    };
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="px-4 py-20 lg:min-h-[320vh] lg:py-28">
+      <div
+        className="container-wide verity-radius-lg relative overflow-hidden bg-[#062f33] px-6 py-14 text-white shadow-[0_28px_90px_rgba(6,31,32,0.16)] md:px-10 lg:sticky lg:top-4 lg:px-16 lg:py-16"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 44% 8%, rgba(217,255,117,0.14), transparent 30%), linear-gradient(135deg, rgba(26,65,67,0.98), rgba(6,47,51,0.98)), radial-gradient(circle at 1px 1px, rgba(217,255,117,0.18) 1px, transparent 1px), linear-gradient(60deg, rgba(217,255,117,0.07) 1px, transparent 1px), linear-gradient(120deg, rgba(217,255,117,0.06) 1px, transparent 1px)",
+          backgroundSize: "auto, auto, 72px 72px, 72px 72px, 72px 72px",
+        }}
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(217,255,117,0.08),transparent_32%),linear-gradient(180deg,rgba(6,31,32,0)_0%,rgba(6,31,32,0.48)_100%)]" />
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="relative z-10 grid gap-10 lg:grid-cols-[1fr_0.95fr] lg:items-start"
+        >
+          <div>
+            <span className="verity-radius-full inline-flex items-center gap-2 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/86 backdrop-blur">
+              <span className="verity-radius-full h-1.5 w-1.5 bg-[#d9ff75]" />
+              What we do
+            </span>
+            <h2 className="mt-5 max-w-3xl text-4xl font-semibold leading-[0.98] tracking-[-0.045em] text-white md:text-6xl">
+              Reliable testing, assurance &{" "}
+              <span className="font-serif-italic text-[#d9ff75]">quality resolution</span>
+            </h2>
+          </div>
+          <div className="max-w-2xl lg:pt-8">
+            <p className="text-base font-medium leading-7 text-white/76">
+              From routine batch testing to acting as the neutral referee in a commercial dispute, every engagement ends with a defensible result you can stand behind.
+            </p>
+            <a
+              href="#capabilities"
+              className="verity-radius-full mt-7 inline-flex h-12 items-center gap-3 bg-[#d9ff75] px-5 text-sm font-semibold text-[#1A4143] transition hover:bg-white"
+            >
+              View test catalogue
+              <span className="verity-radius-full flex h-7 w-7 items-center justify-center bg-[#1A4143] text-white">
+                <ArrowRight className="h-4 w-4 -rotate-45" />
+              </span>
+            </a>
+          </div>
+        </motion.div>
+
+        <div className="relative z-10 mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {services.map((service, index) => (
+            <ServiceRevealCard
+              key={service.title}
+              service={service}
+              index={index}
+              isVisible={index < visibleCardCount}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Index() {
   const [activeProcessStep, setActiveProcessStep] = useState<number | null>(null);
 
   return (
     <Layout transparentNav>
       <section className="relative overflow-hidden px-4 pb-16 pt-12 text-white md:pt-16 lg:min-h-[860px] lg:pb-24" style={{ backgroundColor: "#1A4143" }}>
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_12%,rgba(217,255,117,0.18),transparent_34%),linear-gradient(180deg,#1A4143_0%,#1A4143_62%,#1A4143_100%)]" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-b from-transparent to-background" />
-        <div className="container-wide relative">
-          <div className="grid items-center gap-10 pt-16 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:pt-[8rem]">
-          <div className="max-w-4xl text-center lg:max-w-none lg:text-left">
-            <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-sm font-semibold text-white/55">
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          src={heroBackgroundVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-[#061f20]/25" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#061f20]/50 via-[#1A4143]/40 to-[#061f20]/20" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_12%,rgba(217,255,117,0.16),transparent_34%)]" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[82%] bg-gradient-to-t from-[#1A4143] via-[#1A4143]/50 to-transparent" />
+        <div className="container-wide relative flex min-h-[760px] flex-col justify-end lg:min-h-[860px]">
+          <div className="flex flex-1 items-end pb-8 pt-32 lg:pb-10 lg:pt-40">
+          <div className="max-w-4xl text-left">
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex border border-white/18 bg-white/[0.13] px-3 py-1.5 text-sm font-semibold text-white/72 shadow-[0_12px_34px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.22)] backdrop-blur-md"
+            >
               Independent · Accredited · Impartial
             </motion.p>
             <motion.h1
@@ -381,7 +480,7 @@ export default function Index() {
               initial="hidden"
               animate="show"
               variants={headlineContainer}
-              className="mx-auto mt-5 max-w-4xl text-4xl font-semibold leading-[0.98] tracking-[-0.045em] text-white md:text-6xl lg:mx-0 lg:text-[4.8rem]"
+              className="mt-5 max-w-4xl text-4xl font-semibold leading-[0.98] tracking-[-0.045em] text-white md:text-6xl lg:text-[4.8rem]"
             >
               {heroHeadlineWords.map((word, index) => (
                 <span
@@ -400,11 +499,11 @@ export default function Index() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.22 }}
-              className="mx-auto mt-5 max-w-xl text-sm font-medium leading-6 text-white/58 md:text-base lg:mx-0"
+              className="mt-5 max-w-xl text-sm font-medium leading-6 text-white/58 md:text-base"
             >
               Fast, independent lab results for cargo clearance, disputes, and quality checks across fuels, lubricants, and water.
             </motion.p>
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.28 }} className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start">
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.28 }} className="mt-7 flex flex-col items-start gap-3 sm:flex-row">
               <motion.a 
                 whileHover={{ scale: 1.04 }} 
                 whileTap={{ scale: 0.96 }}
@@ -424,7 +523,6 @@ export default function Index() {
             </motion.div>
           </div>
 
-          <CertificatePanel />
           </div>
 
           <div className="mx-auto mt-12 max-w-5xl overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
@@ -442,83 +540,7 @@ export default function Index() {
 
       <ScrollRevealStatement />
 
-      <section className="px-4 py-20 lg:py-28">
-        <div className="container-wide">
-          <motion.div 
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
-            className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-end"
-          >
-            <div>
-              <p className="text-sm font-semibold text-foreground/45">What we do</p>
-              <h2 className="mt-5 max-w-xl text-5xl font-semibold leading-[0.98] tracking-[-0.045em] md:text-6xl">Four ways we put a number on quality.</h2>
-            </div>
-            <p className="max-w-2xl text-lg leading-8 text-foreground/58 lg:ml-auto">
-              From routine batch testing to acting as the neutral referee in a commercial dispute, every engagement ends the same way: a defensible result you can stand behind.
-            </p>
-          </motion.div>
-
-          <div className="mt-14 grid gap-5 lg:grid-cols-2">
-            {services.map((service, index) => {
-              const Icon = service.icon;
-              const style = serviceCardStyles[index % serviceCardStyles.length];
-              const [number, label] = service.number.split(" / ");
-              return (
-                <motion.article
-                  key={service.title}
-                  initial={{ opacity: 0, y: 18 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-80px" }}
-                  transition={{ duration: 0.55, delay: index * 0.06 }}
-                  whileHover="hover"
-                  className={`group relative min-h-[330px] overflow-hidden rounded-[2.25rem] p-7 shadow-[0_22px_70px_rgba(26,65,67,0.08)] transition duration-300 hover:-translate-y-1 ${style.shell}`}
-                >
-                  <div className={`absolute left-0 top-0 h-full w-1.5 ${style.line}`} />
-                  <div className="relative z-10 flex h-full flex-col">
-                    <div className="flex items-start justify-between gap-6">
-                      <div>
-                        <p className={`font-mono text-[11px] font-semibold uppercase tracking-eyebrow ${style.number}`}>
-                          {number}
-                        </p>
-                        <p className={`mt-2 font-mono text-[11px] font-semibold uppercase tracking-eyebrow ${style.muted}`}>
-                          {label}
-                        </p>
-                      </div>
-                      <motion.div 
-                        variants={{
-                          hover: { scale: 1.1, rotate: 10 }
-                        }}
-                        transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${style.icon}`}
-                      >
-                        <Icon className="h-5 w-5" strokeWidth={1.8} />
-                      </motion.div>
-                    </div>
-
-                    <div className="mt-12 max-w-xl">
-                      <h3 className="text-4xl font-semibold tracking-[-0.045em]">{service.title}</h3>
-                      <p className={`mt-5 text-sm leading-7 ${style.muted}`}>{service.copy}</p>
-                    </div>
-
-                    <div className="mt-auto flex flex-wrap gap-2 pt-10">
-                      {service.tags.map((tag) => (
-                        <span key={tag} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${style.tag}`}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <span className={`pointer-events-none absolute -bottom-8 right-6 text-[9rem] font-semibold leading-none tracking-[-0.08em] opacity-[0.06] ${index === 0 ? "text-white" : "text-[#1A4143]"}`}>
-                    {number}
-                  </span>
-                </motion.article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      <WhatWeDoSection />
 
       <section id="capabilities" className="scroll-mt-28 px-4 py-20 lg:py-28">
         <div className="container-wide">
@@ -552,12 +574,18 @@ export default function Index() {
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: index * 0.08 }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#020d0e]/98 via-[#071d1e]/84 via-62% to-[#1A4143]/28" />
-                <div className="absolute inset-x-0 bottom-0 h-[78%] bg-gradient-to-t from-black/82 via-black/44 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/95 via-black/62 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#020d0e]/92 via-[#071d1e]/48 to-[#1A4143]/18 transition duration-500 group-hover:opacity-0" />
                 <div className="relative z-10 flex min-h-[560px] flex-col justify-between p-6 text-white md:p-7">
                   <div>
                     <span className="font-mono text-[11px] font-semibold uppercase tracking-eyebrow text-white/64">
+                      0{index + 1}
+                    </span>
+                    <h3 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.04em]">{group.title}</h3>
+                  </div>
+                </div>
+                <div className="absolute inset-0 z-20 flex flex-col justify-between bg-[#1A4143]/90 p-6 text-white opacity-0 shadow-[inset_0_0_120px_rgba(6,31,32,0.42)] backdrop-saturate-150 transition duration-500 group-hover:opacity-100 md:p-7">
+                  <div>
+                    <span className="font-mono text-[11px] font-semibold uppercase tracking-eyebrow text-[#d9ff75]">
                       0{index + 1}
                     </span>
                     <h3 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.04em]">{group.title}</h3>
@@ -666,15 +694,15 @@ export default function Index() {
                   viewport={{ once: true, margin: "-80px" }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   whileHover={{ y: -6, scale: 1.01 }}
-                  className="rounded-[2rem] bg-white p-7 shadow-[0_16px_50px_rgba(26,65,67,0.07)] transition duration-300"
+                  className="rounded-[2rem] bg-[#d9ff75] p-7 text-[#1A4143] shadow-[0_18px_60px_rgba(26,65,67,0.12)] transition duration-300"
                 >
                   <div className="flex h-24 w-24 flex-col items-center justify-center rounded-2xl bg-[#1A4143] text-white">
-                    <span className="font-mono text-xs text-white/45">ISO</span>
+                    <span className="font-mono text-xs text-white/46">ISO</span>
                     <span className="text-3xl font-semibold tracking-[-0.04em]">{credential.number}</span>
                   </div>
-                  <p className="mt-7 text-sm font-semibold text-foreground/45">{credential.label}</p>
-                  <h3 className="mt-3 text-2xl font-semibold tracking-[-0.03em]">{credential.title}</h3>
-                  <p className="mt-4 text-sm leading-6 text-foreground/56">{credential.copy}</p>
+                  <p className="mt-7 text-sm font-semibold text-[#1A4143]/54">{credential.label}</p>
+                  <h3 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[#1A4143]">{credential.title}</h3>
+                  <p className="mt-4 text-sm leading-6 text-[#1A4143]/70">{credential.copy}</p>
                 </motion.article>
               ))}
             </div>

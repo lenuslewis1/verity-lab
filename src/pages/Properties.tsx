@@ -1,6 +1,7 @@
 import { ArrowRight, Beaker, CheckCircle2, Droplets, Flame, Fuel, Scale, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import Layout from "@/components/layout/Layout";
+import PageHero from "@/components/shared/PageHero";
 
 import serviceFuels from "@/assets/service-fuels.jpg";
 import serviceLubricants from "@/assets/service-lubricants.jpg";
@@ -77,66 +78,12 @@ const supportServices = [
 export default function Services() {
   return (
     <Layout>
-      <section className="container-wide pb-20 pt-20 lg:pb-28 lg:pt-28">
-        <motion.div 
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: {
-                staggerChildren: 0.1,
-              }
-            }
-          }}
-          className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-end"
-        >
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-            }}
-          >
-            <p className="mb-6 font-mono text-[11px] uppercase tracking-eyebrow text-secondary">
-              Services
-            </p>
-            <h1 className="max-w-5xl text-5xl font-semibold leading-[0.98] tracking-[-0.045em] md:text-7xl lg:text-8xl">
-              From our proven, dynamic approach
-            </h1>
-          </motion.div>
-          <motion.div 
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-            }}
-            className="max-w-2xl lg:ml-auto"
-          >
-            <p className="mb-5 font-mono text-[11px] uppercase tracking-eyebrow text-secondary">
-              What we do
-            </p>
-            <div className="space-y-6 text-lg leading-8 text-foreground/65">
-              <p>
-                From our proven, dynamic approach to our unwavering commitment to client satisfaction, we stand ready to support you every step of the way. Our comprehensive suite of services is underpinned by deep industry expertise and an unwavering dedication to crafting bespoke solutions that perfectly align with your unique requirements.
-              </p>
-              <p>
-                We recognize that your needs are constantly evolving, and last-minute changes are par for the course. That&apos;s why we&apos;ve built agility into the core of our service offering, enabling us to swiftly pivot and adapt to ensure your continued success. Our flexible, client-centric approach sets us apart, and we take pride in our ability to navigate complex challenges with ease.
-              </p>
-              <p>
-                Explore the full scope of our capabilities and discover how we can help you achieve your goals, no matter how ambitious they may be.
-              </p>
-            </div>
-            <motion.a
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              href="#contact"
-              className="mt-9 inline-flex h-12 items-center gap-2 rounded-full bg-[#1f231e] px-6 text-sm font-semibold text-white transition hover:bg-[#343a31]"
-            >
-              Get in touch <ArrowRight className="h-4 w-4" />
-            </motion.a>
-          </motion.div>
-        </motion.div>
-      </section>
+      <PageHero
+        eyebrow="Services"
+        title="Testing, assurance, arbitration, and consulting"
+        description="A flexible, client-centred laboratory service for fuels, gas, oils, and environmental samples, backed by deep industry expertise and defensible reporting."
+        bgImage={serviceRefinery}
+      />
 
       <section className="border-t border-border/40 px-4 py-20 lg:py-28">
         <div className="container-wide">

@@ -19,8 +19,8 @@ export default function Navbar() {
   return (
     <nav className="absolute inset-x-0 top-4 z-50 px-4">
       <div
-        className="mx-auto flex h-16 max-w-6xl items-center justify-between rounded-full px-4 pl-5 text-white shadow-[0_18px_60px_rgba(26,65,67,0.22)] backdrop-blur md:px-5"
-        style={{ backgroundColor: "rgba(26, 65, 67, 0.96)" }}
+        className="mx-auto flex h-16 max-w-[1344px] items-center justify-between border border-white/10 px-4 pl-5 text-white shadow-[0_14px_44px_rgba(6,31,32,0.16)] backdrop-blur-xl md:px-5"
+        style={{ backgroundColor: "rgba(26, 65, 67, 0.42)" }}
       >
         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <Link to="/" className="flex items-center">
