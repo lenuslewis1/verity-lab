@@ -449,7 +449,7 @@ export default function Index() {
 
   return (
     <Layout transparentNav>
-      <section className="relative overflow-hidden px-4 pb-16 pt-12 text-white md:pt-16 lg:min-h-[860px] lg:pb-24" style={{ backgroundColor: "#1A4143" }}>
+      <section className="relative flex min-h-screen min-h-[100svh] overflow-hidden px-4 pb-8 pt-24 text-white md:pt-28 lg:pb-10" style={{ backgroundColor: "#1A4143" }}>
         <video
           className="absolute inset-0 h-full w-full object-cover"
           src={heroBackgroundVideo}
@@ -464,9 +464,9 @@ export default function Index() {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#061f20]/50 via-[#1A4143]/40 to-[#061f20]/20" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_12%,rgba(217,255,117,0.16),transparent_34%)]" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[82%] bg-gradient-to-t from-[#1A4143] via-[#1A4143]/50 to-transparent" />
-        <div className="container-wide relative flex min-h-[760px] flex-col justify-end lg:min-h-[860px]">
-          <div className="flex flex-1 items-end pb-8 pt-32 lg:pb-10 lg:pt-40">
-          <div className="max-w-4xl text-left">
+        <div className="container-wide relative flex w-full min-w-0 flex-1 flex-col justify-end">
+          <div className="flex w-full min-w-0 flex-1 items-end pb-6 pt-8 md:pb-8 lg:pb-10">
+          <div className="w-full min-w-0 max-w-4xl text-left">
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -480,18 +480,17 @@ export default function Index() {
               initial="hidden"
               animate="show"
               variants={headlineContainer}
-              className="mt-5 max-w-4xl text-4xl font-semibold leading-[0.98] tracking-[-0.045em] text-white md:text-6xl lg:text-[4.8rem]"
+              className="mt-5 flex w-full min-w-0 max-w-4xl flex-wrap gap-x-[0.18em] text-4xl font-semibold leading-[0.98] tracking-[-0.045em] text-white md:text-6xl lg:text-[4.8rem]"
             >
               {heroHeadlineWords.map((word, index) => (
                 <span
                   key={`${word}-${index}`}
                   aria-hidden="true"
-                  className={`inline-block overflow-hidden align-top ${index < heroHeadlineWords.length - 1 ? "mr-[0.18em]" : ""}`}
+                  className="inline-block overflow-hidden align-top"
                 >
                   <motion.span variants={headlineWord} className="inline-block will-change-transform">
                     {word}
                   </motion.span>
-                  {index < heroHeadlineWords.length - 1 ? " " : ""}
                 </span>
               ))}
             </motion.h1>
@@ -525,7 +524,7 @@ export default function Index() {
 
           </div>
 
-          <div className="mx-auto mt-12 max-w-5xl overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
+          <div className="mx-auto mt-8 max-w-5xl overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)] md:mt-10">
             <div className="flex w-max gap-3 animate-marquee-rtl hover:[animation-play-state:paused] cursor-pointer">
               {[...heroStats, ...heroStats].map(([value, label], index) => (
                 <div key={`${label}-${index}`} className="w-[248px] shrink-0 rounded-2xl border border-white/10 bg-white/[0.07] p-5 text-center shadow-sm backdrop-blur">
